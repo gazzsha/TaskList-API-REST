@@ -1,0 +1,33 @@
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  cache:
+    type: redis
+    cache-names: redis-cache
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+      password: ${REDIS_PASSWORD}
+  datasource:
+    url: jdbc:postgresql://${HOST}:5432/${POSTGRES_DATABASE}?currentSchema=${POSTGRES_SCHEMA}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+#  sql:
+#    init:
+#      mode: never
+#      continue-on-error: false
+  liquibase:
+    change-log: classpath:liquibase/db.changelog.xml
+    enabled: true
+    default-schema: tasklist
+#      data-locations: classpath:demo_data.sql
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    access: 1
+    refresh: 30
+
+#springdoc:
+#  override-with-generic-response: false
