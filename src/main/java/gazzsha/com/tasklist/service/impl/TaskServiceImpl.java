@@ -30,21 +30,21 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "TaskService::getById", key = "#id")
-    public Task getById(Long id) {
+    public Task getById(final Long id) {
         return taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found.", id)));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Task> getAllByUseId(Long id) {
+    public List<Task> getAllByUseId(final Long id) {
         return taskRepository.findAllByUserId(id);
     }
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @CachePut(value = "TaskService::getById", key = "#task.id")
-    public Task update(Task task) {
+    public Task update(final Task task) {
         if (Objects.isNull(task.getStatus())) {
             task.setStatus(Status.TODO);
         }
@@ -55,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Cacheable(value = "TaskService::getById", key = "#task.id")
-    public Task create(Task task, Long userId) {
+    public Task create(final Task task, final Long userId) {
         User user = userService.getById(userId);
         task.setStatus(Status.TODO);
         user.getTasks().add(task);
@@ -66,7 +66,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @CacheEvict(value = "TaskService::getById", key = "#id")
-    public void delete(Long id) {
+    public void delete(final Long id) {
         taskRepository.deleteById(id);
     }
 }

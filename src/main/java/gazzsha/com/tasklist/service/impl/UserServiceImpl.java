@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "UserService::getById", key = "#id")
-    public User getById(Long id) {
+    public User getById(final Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id %s not found.", id)));
     }
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "UserService::getByUsername", key = "#username")
-    public User getByUsername(String username) {
+    public User getByUsername(final String username) {
         return userRepository.findAllByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("User with username %s not found.", username)));
     }
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
             @CachePut(value = "UserService::getById", key = "#user.id"),
             @CachePut(value = "UserService::getByUsername", key = "#user.username")
     })
-    public User update(User user) {
+    public User update(final User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return user;
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
             @Cacheable(value = "UserService::getById", key = "#user.id"),
             @Cacheable(value = "UserService::getByUsername", key = "#user.username")
     })
-    public User create(User user) {
+    public User create(final User user) {
         if (userRepository.findAllByUsername(user.getUsername()).isPresent()) {
             throw new IllegalStateException(String.format("User with username %s already exist", user.getUsername()));
         }
@@ -76,14 +76,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "UserService::isTaskOwner", key = "#userId + '.' + #taskId")
-    public boolean isTaskOwner(Long userId, Long taskId) {
+    public boolean isTaskOwner(final Long userId, final Long taskId) {
         return userRepository.isTaskOwner(userId, taskId);
     }
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @CacheEvict(value = "UserService::getById", key = "#id")
-    public void delete(Long id) {
+    public void delete(final Long id) {
         userRepository.deleteById(id);
     }
 }

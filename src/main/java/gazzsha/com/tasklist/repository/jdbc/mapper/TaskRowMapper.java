@@ -14,7 +14,7 @@ public class TaskRowMapper {
 
 
     @SneakyThrows
-    public static Task mapRow(ResultSet resultSet) {
+    public static Task mapRow(final ResultSet resultSet) {
         if (resultSet.next()) {
             Task task = new Task();
             task.setId(resultSet.getLong("task_id"));
@@ -32,7 +32,7 @@ public class TaskRowMapper {
 
 
     @SneakyThrows
-    public static List<Task> mapRows(ResultSet resultSet) {
+    public static List<Task> mapRows(final ResultSet resultSet) {
         List<Task> tasks = new ArrayList<>(resultSet.getRow());
         while (resultSet.next()) {
             Task task = new Task();

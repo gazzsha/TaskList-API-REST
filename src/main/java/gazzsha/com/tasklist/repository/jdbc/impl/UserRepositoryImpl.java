@@ -41,20 +41,20 @@ public class UserRepositoryImpl implements UserRepository {
             """;
 
     private final String FIND_BY_USERNAME = """
-            SELECT  u.id as user_id,
-                    u.name as user_name,
-                    u.username as user_username,
-                    u.password as user_password,
-                    ur.role as user_role_role,
-                    t.id as task_id,
-                    t.title as task_title,
-                    t.description as task_description,
-                    t.expiration_date as task_expiration_date,
-                    t.status as task_status
+            SELECT  u.id AS user_id,
+                    u.name AS user_name,
+                    u.username AS user_username,
+                    u.password AS user_password,
+                    ur.role AS user_role_role,
+                    t.id AS task_id,
+                    t.title AS task_title,
+                    t.description AS task_description,
+                    t.expiration_date AS task_expiration_date,
+                    t.status AS task_status
             FROM users u
-                LEFT JOIN users_roles ur on u.id = ur.user_id
-                LEFT JOIN users_tasks ut on u.id = ut.user_id
-                LEFT JOIN tasks t on ut.task_id = t.id
+                LEFT JOIN users_roles ur ON u.id = ur.user_id
+                LEFT JOIN users_tasks ut ON u.id = ut.user_id
+                LEFT JOIN tasks t ON ut.task_id = t.id
             WHERE u.username = ?
             """;
 
@@ -86,7 +86,7 @@ public class UserRepositoryImpl implements UserRepository {
             """;
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(final Long id) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID,
@@ -102,7 +102,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
+    public Optional<User> findByUsername(final String username) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_USERNAME,
@@ -118,7 +118,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void update(User user) {
+    public void update(final User user) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE);
@@ -133,7 +133,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void create(User user) {
+    public void create(final User user) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(CREATE, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -151,7 +151,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void insertUserRole(Long userId, Role role) {
+    public void insertUserRole(final Long userId, final Role role) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_ROLE);
@@ -164,7 +164,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean isTaskOwner(Long userId, Long taskId) {
+    public boolean isTaskOwner(final Long userId, final Long taskId) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(IS_TASK_OWNER);
@@ -180,7 +180,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(final Long id) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE);

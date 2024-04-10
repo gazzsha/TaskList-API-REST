@@ -13,7 +13,7 @@ import java.util.Set;
 public class UserRowMapper {
 
     @SneakyThrows
-    public static User mapRow(ResultSet resultSet) {
+    public static User mapRow(final ResultSet resultSet) {
         Set<Role> roles = new HashSet<>();
         while (resultSet.next()) {
             roles.add(Role.valueOf(resultSet.getString("user_role_role")));

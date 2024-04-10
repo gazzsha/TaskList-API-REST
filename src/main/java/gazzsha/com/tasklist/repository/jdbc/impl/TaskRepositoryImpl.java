@@ -8,7 +8,13 @@ import gazzsha.com.tasklist.repository.jdbc.mapper.TaskRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -64,7 +70,7 @@ public class TaskRepositoryImpl implements TaskRepository {
             """;
 
     @Override
-    public Optional<Task> findById(Long id) {
+    public Optional<Task> findById(final Long id) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement statement = connection.prepareStatement(FIND_BY_ID);
@@ -72,13 +78,13 @@ public class TaskRepositoryImpl implements TaskRepository {
             try (ResultSet resultSet = statement.executeQuery()) {
                 return Optional.ofNullable(TaskRowMapper.mapRow(resultSet));
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             throw new ResourceMappingException(String.format("Error while finding by id %s", id));
         }
     }
 
     @Override
-    public List<Task> findAllByUserId(Long userId) {
+    public List<Task> findAllByUserId(final Long userId) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement statement = connection.prepareStatement(FIND_ALL_BY_USER_ID);
@@ -86,26 +92,26 @@ public class TaskRepositoryImpl implements TaskRepository {
             try (ResultSet resultSet = statement.executeQuery()) {
                 return TaskRowMapper.mapRows(resultSet);
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             throw new ResourceMappingException(String.format("Error while finding all by userId %s", userId));
         }
     }
 
     @Override
-    public void assignToUserById(Long taskId, Long userId) {
+    public void assignToUserById(final Long taskId, final Long userId) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement statement = connection.prepareStatement(ASSIGN);
             statement.setLong(1, userId);
             statement.setLong(2, taskId);
             statement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             throw new ResourceMappingException(String.format("Error while assign to userId %s task with id %s", userId, taskId));
         }
     }
 
     @Override
-    public void update(Task task) {
+    public void update(final Task task) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement statement = connection.prepareStatement(UPDATE);
@@ -123,13 +129,13 @@ public class TaskRepositoryImpl implements TaskRepository {
             statement.setString(4, task.getStatus().name());
             statement.setLong(5, task.getId());
             statement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             throw new ResourceMappingException(String.format("Error while updating task with id %s", task.getId()));
         }
     }
 
     @Override
-    public void create(Task task) {
+    public void create(final Task task) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement statement = connection.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
@@ -150,13 +156,13 @@ public class TaskRepositoryImpl implements TaskRepository {
                 resultSet.next();
                 task.setId(resultSet.getLong((1)));
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             throw new ResourceMappingException("Error while creating task");
         }
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(final Long id) {
         try {
             Connection connection = dataSourceConfig.getConnection();
             PreparedStatement statement = connection.prepareStatement(DELETE);
