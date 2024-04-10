@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -34,6 +33,6 @@ public class JwtTokenFilter extends GenericFilterBean {
             } catch (ResourceNotFoundException ignore) {
             }
         }
-        filterChain.doFilter(servletRequest,servletResponse);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 }

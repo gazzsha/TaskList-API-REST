@@ -4,7 +4,6 @@ import gazzsha.com.tasklist.domain.user.Role;
 import gazzsha.com.tasklist.service.UserService;
 import gazzsha.com.tasklist.web.security.JwtEntity;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

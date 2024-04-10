@@ -3,7 +3,7 @@ package gazzsha.com.tasklist.service.impl;
 import gazzsha.com.tasklist.domain.exception.ResourceNotFoundException;
 import gazzsha.com.tasklist.domain.user.Role;
 import gazzsha.com.tasklist.domain.user.User;
-import gazzsha.com.tasklist.repository.UserRepository;
+import gazzsha.com.tasklist.repository.jpa.UserRepository;
 import gazzsha.com.tasklist.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Cacheable(value = "UserService::getByUsername", key = "#username")
     public User getByUsername(String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findAllByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("User with username %s not found.", username)));
     }
 
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     })
     public User update(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.update(user);
+        userRepository.save(user);
         return user;
     }
 
@@ -60,17 +60,16 @@ public class UserServiceImpl implements UserService {
             @Cacheable(value = "UserService::getByUsername", key = "#user.username")
     })
     public User create(User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+        if (userRepository.findAllByUsername(user.getUsername()).isPresent()) {
             throw new IllegalStateException(String.format("User with username %s already exist", user.getUsername()));
         }
         if (!user.getPassword().equals(user.getPasswordConfirmation())) {
             throw new IllegalStateException(String.format("Password %s and %s do not match.", user.getPassword(), user.getPasswordConfirmation()));
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.create(user);
         Set<Role> roles = Set.of(Role.ROLE_USER);
-        userRepository.insertUserRole(user.getId(), Role.ROLE_USER);
         user.setRoles(roles);
+        userRepository.save(user);
         return user;
     }
 
@@ -85,6 +84,6 @@ public class UserServiceImpl implements UserService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @CacheEvict(value = "UserService::getById", key = "#id")
     public void delete(Long id) {
-        userRepository.delete(id);
+        userRepository.deleteById(id);
     }
 }

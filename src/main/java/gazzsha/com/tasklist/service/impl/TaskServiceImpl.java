@@ -3,9 +3,10 @@ package gazzsha.com.tasklist.service.impl;
 import gazzsha.com.tasklist.domain.exception.ResourceNotFoundException;
 import gazzsha.com.tasklist.domain.task.Status;
 import gazzsha.com.tasklist.domain.task.Task;
-import gazzsha.com.tasklist.repository.TaskRepository;
-import gazzsha.com.tasklist.repository.UserRepository;
+import gazzsha.com.tasklist.domain.user.User;
+import gazzsha.com.tasklist.repository.jpa.TaskRepository;
 import gazzsha.com.tasklist.service.TaskService;
+import gazzsha.com.tasklist.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -24,6 +25,8 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
 
+    private final UserService userService;
+
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "TaskService::getById", key = "#id")
@@ -40,29 +43,30 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @CachePut(value = "TaskService::getById",key = "#task.id")
+    @CachePut(value = "TaskService::getById", key = "#task.id")
     public Task update(Task task) {
         if (Objects.isNull(task.getStatus())) {
             task.setStatus(Status.TODO);
         }
-        taskRepository.update(task);
+        taskRepository.save(task);
         return task;
     }
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @Cacheable(value = "TaskService::getById",key = "#task.id")
+    @Cacheable(value = "TaskService::getById", key = "#task.id")
     public Task create(Task task, Long userId) {
+        User user = userService.getById(userId);
         task.setStatus(Status.TODO);
-        taskRepository.create(task);
-        taskRepository.assignToUserById(task.getId(),userId);
+        user.getTasks().add(task);
+        userService.update(user);
         return task;
     }
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @CacheEvict(value = "TaskService::getById",key = "#id")
+    @CacheEvict(value = "TaskService::getById", key = "#id")
     public void delete(Long id) {
-        taskRepository.delete(id);
+        taskRepository.deleteById(id);
     }
 }
