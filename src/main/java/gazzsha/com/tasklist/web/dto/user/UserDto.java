@@ -1,9 +1,7 @@
 package gazzsha.com.tasklist.web.dto.user;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import gazzsha.com.tasklist.web.dto.validation.OnCreate;
 import gazzsha.com.tasklist.web.dto.validation.OnUpdate;
 import io.swagger.v3.oas.annotations.media.Schema;

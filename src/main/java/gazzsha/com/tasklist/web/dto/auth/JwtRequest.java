@@ -9,10 +9,10 @@ import lombok.Data;
 @Schema(description = "Request for login")
 public class JwtRequest {
 
-    @Schema(description = "email",example = "rysaev@mail.ru")
+    @Schema(description = "email", example = "rysaev@mail.ru")
     @NotNull(message = "Username must be not null.")
     private String username;
-    @Schema(description = "password",example = "123")
+    @Schema(description = "password", example = "123")
     @NotNull(message = "Password must be not null.")
     private String password;
 }

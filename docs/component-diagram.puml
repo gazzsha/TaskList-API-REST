@@ -1,0 +1,24 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+component [Server] as Server
+component [Redis] as Redis
+component [Postgres] as Postgres
+
+
+database "Redis" {
+  frame "Cache" {
+  }
+}
+
+database "Postgres" {
+  frame "Data" {
+  }
+}
+
+
+Server -> Redis
+Server -> Postgres
+
+@enduml
